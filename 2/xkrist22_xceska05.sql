@@ -1,0 +1,11 @@
+-- -----------------------------------------------------------------
+-- IDS Project
+-- Database system for beer 
+-- Authors: Jiří Křištof (xkrist22)
+--          Petr Češka (xceska05)
+-- Repository: https://github.com/xkrist22/IDS_2020.git
+-- -----------------------------------------------------------------
+
+-- -----------------------------------------------------------------
+-- Part 2: script for creating elementary objects of database
+-- -----------------------------------------------------------------
