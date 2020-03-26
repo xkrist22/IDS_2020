@@ -29,7 +29,7 @@ DROP TABLE pub;
 
 CREATE TABLE pub (
     id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
-    name NOT NULL
+    name VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE person (
@@ -54,9 +54,9 @@ CREATE TABLE system_user (
     pub_id INT DEFAULT NULL,
     person_id INT DEFAULT NULL,
     brewery_id INT DEFAULT NULL,
-    CONSTRAINT pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
-    CONSTRAINT person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
-    CONSTRAINT brewery_fk FOREIGN KEY(brewery_id) REFERENCES pub(id) ON DELETE SET NULL
+    CONSTRAINT system_user_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
+    CONSTRAINT system_user_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
+    CONSTRAINT system_user_brewery_fk FOREIGN KEY(brewery_id) REFERENCES pub(id) ON DELETE SET NULL
 );
 
 CREATE TABLE hop (
@@ -64,8 +64,8 @@ CREATE TABLE hop (
     aroma VARCHAR(255) NOT NULL,
     bitterness INT NOT NULL,
     alpha_acid_volume INT NOT NULL,
-    CONSTRAINT check_bitterness CHECK ( bitterness>=0 ),
-    CONSTRAINT check_alpha_acid_volume CHECK ( alpha_acid_volume>=0 )
+    CONSTRAINT hop_check_bitterness CHECK ( bitterness>=0 ),
+    CONSTRAINT hop_check_alpha_acid_volume CHECK ( alpha_acid_volume>=0 )
 );
 
 CREATE TABLE yeast (
@@ -74,9 +74,9 @@ CREATE TABLE yeast (
     proteins_volume INT NOT NULL,
     sugar_volume INT NOT NULL,
     vitamins_volume INT NOT NULL,
-    CONSTRAINT check_proteins_volume CHECK ( proteins_volume>=0 ),
-    CONSTRAINT check_sugar_volume CHECK ( sugar_volume>=0 ),
-    CONSTRAINT check_vitamins_volume CHECK ( vitamins_volume>=0 )
+    CONSTRAINT yeast_check_proteins_volume CHECK ( proteins_volume>=0 ),
+    CONSTRAINT yeast_check_sugar_volume CHECK ( sugar_volume>=0 ),
+    CONSTRAINT yeast_check_vitamins_volume CHECK ( vitamins_volume>=0 )
 );
 
 CREATE TABLE malt (
@@ -84,7 +84,7 @@ CREATE TABLE malt (
     color VARCHAR(255) NOT NULL,
     extract VARCHAR(255) NOT NULL,
     sugar_volume INT NOT NULL,
-    CONSTRAINT check_sugar_volume CHECK ( sugar_volume>=0 )
+    CONSTRAINT malt_check_sugar_volume CHECK ( sugar_volume>=0 )
 );
 
 CREATE TABLE beer (
@@ -100,10 +100,10 @@ CREATE TABLE beer (
     hop_id INT,
     yeast_id INT,
     malt_id INT,
-    CONSTRAINT brewery_fk FOREIGN KEY (brewery_id) REFERENCES brewery(id) ON DELETE CASCADE,
-    CONSTRAINT hop_fk FOREIGN KEY (hop_id) REFERENCES hop(id) ON DELETE SET NULL,
-    CONSTRAINT yeast_fk FOREIGN KEY (yeast_id) REFERENCES yeast(id) ON DELETE SET NULL,
-    CONSTRAINT malt_fk FOREIGN KEY (malt_id) REFERENCES malt(id) ON DELETE SET NULL
+    CONSTRAINT beer_brewery_fk FOREIGN KEY (brewery_id) REFERENCES brewery(id) ON DELETE CASCADE,
+    CONSTRAINT beer_hop_fk FOREIGN KEY (hop_id) REFERENCES hop(id) ON DELETE SET NULL,
+    CONSTRAINT beer_yeast_fk FOREIGN KEY (yeast_id) REFERENCES yeast(id) ON DELETE SET NULL,
+    CONSTRAINT beer_malt_fk FOREIGN KEY (malt_id) REFERENCES malt(id) ON DELETE SET NULL
 );
 
 CREATE TABLE pub_rating (
@@ -112,10 +112,10 @@ CREATE TABLE pub_rating (
     service INT NOT NULL,
     interior INT NOT NULL,
     result INT NOT NULL,
-    CONSTRAINT check_rating CHECK ( service>=0 AND service<=5 AND interior>=0 AND interior<=5 AND result>=0 AND result<=5 ),
-    CONSTRAINT pub_rating_pk PRIMARY KEY (pub_id, person_id),
-    CONSTRAINT pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
-    CONSTRAINT person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL
+    CONSTRAINT pub_check_rating CHECK ( service>=0 AND service<=5 AND interior>=0 AND interior<=5 AND result>=0 AND result<=5 ),
+    CONSTRAINT pub_pub_rating_pk PRIMARY KEY (pub_id, person_id),
+    CONSTRAINT pub_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
+    CONSTRAINT pub_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL
 );
 
 CREATE TABLE beer_rating (
@@ -124,18 +124,18 @@ CREATE TABLE beer_rating (
     taste INT NOT NULL,
     foam INT NOT NULL,
     smell INT NOT NULL,
-    CONSTRAINT check_rating CHECK ( taste>=0 AND taste<=5 AND foam>=0 AND foam<=5 AND smell>=0 AND smell<=5 ),
-    CONSTRAINT beer_rating_pk PRIMARY KEY (beer_id, person_id),
-    CONSTRAINT beer_fk FOREIGN KEY(beer_id) REFERENCES beer(id) ON DELETE SET NULL,
-    CONSTRAINT person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL
+    CONSTRAINT beer_check_rating CHECK ( taste>=0 AND taste<=5 AND foam>=0 AND foam<=5 AND smell>=0 AND smell<=5 ),
+    CONSTRAINT beer_beer_rating_pk PRIMARY KEY (beer_id, person_id),
+    CONSTRAINT beer_beer_fk FOREIGN KEY(beer_id) REFERENCES beer(id) ON DELETE SET NULL,
+    CONSTRAINT beer_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL
 );
 
-CREATE TABLEss offer (
+CREATE TABLE offer (
     pub_id INT NOT NULL,
     beer_id INT NOT NULL,
     price INT NOT NULL,
-    CONSTRAINT check_price CHECK ( price>0 ),
-    CONSTRAINT offer_pk PRIMARY KEY (pub_id, beer_id),
-    CONSTRAINT beer_fk FOREIGN KEY(beer_id) REFERENCES beer(id) ON DELETE SET NULL,
-    CONSTRAINT pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL
+    CONSTRAINT offer_check_price CHECK ( price>0 ),
+    CONSTRAINT offer_offer_pk PRIMARY KEY (pub_id, beer_id),
+    CONSTRAINT offer_beer_fk FOREIGN KEY(beer_id) REFERENCES beer(id) ON DELETE SET NULL,
+    CONSTRAINT offer_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL
 );
