@@ -1,1 +1,21 @@
-INSERT INTO account (email, city, street, house, pub_id) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11', '')
+INSERT INTO account (email, city, street, house) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11');
+
+INSERT INTO pub (COLUMN_NAME) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11', '');
+
+INSERT INTO person (email, city, street, house) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11', '');
+
+INSERT INTO brewery (email, city, street, house) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11', '');
+
+INSERT INTO hop () values ();
+
+INSERT INTO yeast () values ();
+
+INSERT INTO malt () values ();
+
+INSERT INTO beer (id, name, color, type, alcohol_volume, fermentation_type, bitterness, savor, brewery_id, hop_id, yeast_id, malt_id) values ();
+
+INSERT INTO beer_rating () values ();
+
+INSERT INTO pub_rating () values ();
+
+INSERT INTO offer () values ();
