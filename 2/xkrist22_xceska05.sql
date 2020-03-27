@@ -1,6 +1,6 @@
 -- -----------------------------------------------------------------
 -- IDS Project
--- Database system for beer 
+-- Database system for beer
 -- Authors: Jiří Křištof (xkrist22)
 --          Petr Češka (xceska05)
 -- Repository: https://github.com/xkrist22/IDS_2020.git
@@ -56,7 +56,7 @@ CREATE TABLE account (
     brewery_id INT DEFAULT NULL,
     CONSTRAINT account_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
     CONSTRAINT account_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
-    CONSTRAINT account_brewery_fk FOREIGN KEY(brewery_id) REFERENCES pub(id) ON DELETE SET NULL
+    CONSTRAINT account_brewery_fk FOREIGN KEY(brewery_id) REFERENCES brewery(id) ON DELETE SET NULL
 );
 
 CREATE TABLE hop (
