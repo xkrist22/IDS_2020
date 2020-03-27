@@ -19,10 +19,11 @@ DROP TABLE beer;
 DROP TABLE malt;
 DROP TABLE yeast;
 DROP TABLE hop;
-DROP TABLE account;
 DROP TABLE brewery;
 DROP TABLE person;
 DROP TABLE pub;
+DROP TABLE account;
+
 
 
 -- CREATE tables
