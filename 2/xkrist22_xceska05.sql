@@ -19,7 +19,7 @@ DROP TABLE beer;
 DROP TABLE malt;
 DROP TABLE yeast;
 DROP TABLE hop;
-DROP TABLE system_user;
+DROP TABLE account;
 DROP TABLE brewery;
 DROP TABLE person;
 DROP TABLE pub;
@@ -45,7 +45,7 @@ CREATE TABLE brewery (
     established_date DATE
 );
 
-CREATE TABLE system_user (
+CREATE TABLE account (
     id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL CHECK ( REGEXP_LIKE(email, '^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$') ),
     city VARCHAR(255) NOT NULL,
@@ -54,9 +54,9 @@ CREATE TABLE system_user (
     pub_id INT DEFAULT NULL,
     person_id INT DEFAULT NULL,
     brewery_id INT DEFAULT NULL,
-    CONSTRAINT system_user_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
-    CONSTRAINT system_user_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
-    CONSTRAINT system_user_brewery_fk FOREIGN KEY(brewery_id) REFERENCES pub(id) ON DELETE SET NULL
+    CONSTRAINT account_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
+    CONSTRAINT account_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
+    CONSTRAINT account_brewery_fk FOREIGN KEY(brewery_id) REFERENCES pub(id) ON DELETE SET NULL
 );
 
 CREATE TABLE hop (
