@@ -27,36 +27,36 @@ DROP TABLE pub;
 
 -- CREATE tables
 
-CREATE TABLE pub (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE person (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    surname VARCHAR(255) NOT NULL,
-    birth_date DATE NOT NULL
-);
-
-CREATE TABLE brewery (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
-    name VARCHAR(255),
-    established_date DATE
-);
-
 CREATE TABLE account (
     id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL CHECK ( REGEXP_LIKE(email, '^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$') ),
     city VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
-    house VARCHAR(255) NOT NULL,
-    pub_id INT DEFAULT NULL,
-    person_id INT DEFAULT NULL,
-    brewery_id INT DEFAULT NULL,
-    CONSTRAINT account_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL,
-    CONSTRAINT account_person_fk FOREIGN KEY(person_id) REFERENCES person(id) ON DELETE SET NULL,
-    CONSTRAINT account_brewery_fk FOREIGN KEY(brewery_id) REFERENCES brewery(id) ON DELETE SET NULL
+    house VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE pub (
+    id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    CONSTRAINT pub_pk PRIMARY KEY (id),
+    CONSTRAINT pub_pk_fk FOREIGN KEY (id) REFERENCES account(id) ON DELETE CASCADE
+);
+
+CREATE TABLE person (
+    id INT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    surname VARCHAR(255) NOT NULL,
+    birth_date DATE NOT NULL,
+    CONSTRAINT person_pk PRIMARY KEY (id),
+    CONSTRAINT person_pk_fk FOREIGN KEY (id) REFERENCES account(id) ON DELETE CASCADE
+);
+
+CREATE TABLE brewery (
+    id INT NOT NULL,
+    name VARCHAR(255),
+    established_date DATE,
+    CONSTRAINT brewery_pk PRIMARY KEY (id),
+    CONSTRAINT brewery_pk_fk FOREIGN KEY (id) REFERENCES account(id) ON DELETE CASCADE
 );
 
 CREATE TABLE hop (
