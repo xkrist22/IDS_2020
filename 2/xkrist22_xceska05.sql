@@ -29,7 +29,7 @@ DROP TABLE account;
 -- CREATE tables
 
 CREATE TABLE account (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     email VARCHAR(255) NOT NULL CHECK ( REGEXP_LIKE(email, '^([a-zA-Z0-9_\-.]+)@([a-zA-Z0-9_\-.]+)\.([a-zA-Z]{2,5})$') ),
     city VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE brewery (
 );
 
 CREATE TABLE hop (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     aroma VARCHAR(255) NOT NULL,
     bitterness INT NOT NULL,
     alpha_acid_volume INT NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE hop (
 );
 
 CREATE TABLE yeast (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     state VARCHAR(32) NOT NULL,
     proteins_volume INT NOT NULL,
     sugar_volume INT NOT NULL,
@@ -81,7 +81,7 @@ CREATE TABLE yeast (
 );
 
 CREATE TABLE malt (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     color VARCHAR(255) NOT NULL,
     extract VARCHAR(255) NOT NULL,
     sugar_volume INT NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE malt (
 );
 
 CREATE TABLE beer (
-    id INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
+    id INT NOT NULL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     color VARCHAR(255) NOT NULL,
     type VARCHAR(255) NOT NULL,
