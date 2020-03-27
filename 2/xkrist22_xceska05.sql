@@ -30,10 +30,11 @@ DROP TABLE account;
 
 CREATE TABLE account (
     id INT NOT NULL PRIMARY KEY,
-    email VARCHAR(255) NOT NULL CHECK ( REGEXP_LIKE(email, '^([-a-zA-Z0-9_.]+)@([-a-zA-Z0-9_.]+)\.([a-zA-Z]{2,5})$') ),
+    email VARCHAR(255) NOT NULL,
     city VARCHAR(255) NOT NULL,
     street VARCHAR(255) NOT NULL,
-    house VARCHAR(255) NOT NULL
+    house VARCHAR(255) NOT NULL,
+    CONSTRAINT check_mail CHECK( REGEXP_LIKE(email, '^[a-zA-Z][-a-zA-Z0-9.]*@[-a-zA-Z0-9.]+\.[a-zA-Z][a-zA-Z][a-zA-Z]*$') )
 );
 
 CREATE TABLE pub (
