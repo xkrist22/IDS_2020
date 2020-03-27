@@ -1,0 +1,1 @@
+INSERT INTO account (email, city, street, house, pub_id) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '620/11', '')
