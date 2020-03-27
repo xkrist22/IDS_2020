@@ -101,9 +101,9 @@ CREATE TABLE beer (
     yeast_id INT,
     malt_id INT,
     CONSTRAINT beer_brewery_fk FOREIGN KEY (brewery_id) REFERENCES brewery(id) ON DELETE CASCADE,
-    CONSTRAINT beer_hop_fk FOREIGN KEY (hop_id) REFERENCES hop(id) ON DELETE SET NULL,
-    CONSTRAINT beer_yeast_fk FOREIGN KEY (yeast_id) REFERENCES yeast(id) ON DELETE SET NULL,
-    CONSTRAINT beer_malt_fk FOREIGN KEY (malt_id) REFERENCES malt(id) ON DELETE SET NULL
+    CONSTRAINT beer_hop_fk FOREIGN KEY (hop_id) REFERENCES hop(id) ON DELETE CASCADE,
+    CONSTRAINT beer_yeast_fk FOREIGN KEY (yeast_id) REFERENCES yeast(id) ON DELETE CASCADE,
+    CONSTRAINT beer_malt_fk FOREIGN KEY (malt_id) REFERENCES malt(id) ON DELETE CASCADE
 );
 
 CREATE TABLE pub_rating (
