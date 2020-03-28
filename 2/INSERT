@@ -42,20 +42,20 @@ INSERT INTO account (id, email, city, street, house) values ('11', 'denis@seznam
 INSERT INTO account (id, email, city, street, house) values ('12', 'steave@gmail.com', 'Česká Třebová', 'Příční', '4');
 
 INSERT INTO pub (id, name) values ('2', 'U Ditky');
-INSERT INTO person (id, name, surname, birth_date) values (1, 'Petr', ' Češka', 1999-03-26);
-INSERT INTO brewery (id, name, established_date) values ('3', 'Na kopečku', '2009');
+INSERT INTO person (id, name, surname, birth_date) values (1, 'Petr', ' Češka', TO_DATE('1999-03-25','YYYY-MM-DD'));
+INSERT INTO brewery (id, name, established_date) values ('3', 'Na kopečku', TO_DATE('2009-06-21','YYYY-MM-DD'));
 
-INSERT INTO person (id, name, surname, birth_date) values (4, 'Pavel', ' Staša', 1999-12-23);
-INSERT INTO person (id, name, surname, birth_date) values (5, 'Honza', ' Čáp', 1989-03-12);
-INSERT INTO person (id, name, surname, birth_date) values (6, 'Kamil', ' Muller', 1998-01-04);
+INSERT INTO person (id, name, surname, birth_date) values (4, 'Pavel', ' Staša', TO_DATE('1999-12-23','YYYY-MM-DD'));
+INSERT INTO person (id, name, surname, birth_date) values (5, 'Honza', ' Čáp', TO_DATE('1989-03-12','YYYY-MM-DD'));
+INSERT INTO person (id, name, surname, birth_date) values (6, 'Kamil', ' Muller', TO_DATE('1998-01-04','YYYY-MM-DD'));
 
 INSERT INTO pub (id, name) values ('7', 'U Ditky');
 INSERT INTO pub (id, name) values ('8', 'Černá Kočka');
 INSERT INTO pub (id, name) values ('9', 'Slavie');
 
-INSERT INTO brewery (id, name, established_date) values ('10', 'Na kopečku', '2009');
-INSERT INTO brewery (id, name, established_date) values ('11', 'Staropramen', '1989');
-INSERT INTO brewery (id, name, established_date) values ('12', 'Bernardu', '2019');
+INSERT INTO brewery (id, name, established_date) values ('10', 'Na kopečku', TO_DATE('2009-05-25','YYYY-MM-DD'));
+INSERT INTO brewery (id, name, established_date) values ('11', 'Staropramen', TO_DATE('1989-04-22','YYYY-MM-DD'));
+INSERT INTO brewery (id, name, established_date) values ('12', 'Bernardu', TO_DATE('2019-08-17','YYYY-MM-DD'));
 
 INSERT INTO hop (id, aroma, bitterness, alpha_acid_volume) values ('1', 'cocoa', '4', '6');
 INSERT INTO hop (id, aroma, bitterness, alpha_acid_volume) values ('2', 'coffee', '3', '7');
