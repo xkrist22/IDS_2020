@@ -228,11 +228,14 @@ INSERT INTO beer (id, name, color, type, alcohol_volume, fermentation_type, bitt
 
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('1', '5', '4', '4', '4');
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('2', '6', '3', '3', '1');
-INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('3', '6', '2', '5', '1');
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('3', '6', '2', '5', '5');
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('4', '4', '3', '4', '2');
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('5', '5', '4', '1', '2');
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('6', '4', '5', '2', '3');
 INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('7', '4', '4', '3', '2');
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('5', '6', '4', '3', '4');
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('6', '6', '3', '2', '3');
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('7', '6', '4', '3', '5');
 
 
 INSERT INTO pub_rating (pub_id, person_id, service, interior, result) values ('7', '1', '2', '2', '4');
