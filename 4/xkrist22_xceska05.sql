@@ -279,6 +279,7 @@ INSERT INTO offer (pub_id, beer_id, price) values ('9', '7', '41');
 -- PROCEDURES
 
 -- Procedure for printing statistics about beers
+-- NOTE: If you are using IDE (DataGrip, ...), you should first enable DBMSOUTPUT
 CREATE OR REPLACE PROCEDURE beer_stat
 AS
     CURSOR beer_cursor IS SELECT id FROM beer;
@@ -309,8 +310,36 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('  Average smell: ' || TO_CHAR(beer_avg_smell));
         DBMS_OUTPUT.PUT_LINE('  Average price: ' || TO_CHAR(beer_avg_price));
     END LOOP;
+    CLOSE beer_cursor;
 END;
 
 -- demonstrate procedure beer_stat
 BEGIN beer_stat(); END;
 
+
+-- Procedure for printing statistics about database
+-- NOTE: If you are using IDE (DataGrip, ...), you should first enable DBMSOUTPUT
+CREATE OR REPLACE PROCEDURE database_stat
+AS
+    account_count INT;
+    brewery_count INT;
+    rating_count INT;
+    beer_count INT;
+    pub_count INT;
+BEGIN
+    SELECT COUNT(*) INTO account_count FROM account;
+    SELECT COUNT(*) INTO brewery_count FROM brewery;
+    SELECT COUNT(*) INTO rating_count FROM beer_rating;
+    SELECT COUNT(*) INTO beer_count FROM beer;
+    SELECT COUNT(*) INTO pub_count FROM pub;
+
+    DBMS_OUTPUT.PUT_LINE('Statistics:');
+    DBMS_OUTPUT.PUT_LINE('  Number of accounts: ' || TO_CHAR(account_count));
+    DBMS_OUTPUT.PUT_LINE('  Number of breweries: ' || TO_CHAR(brewery_count));
+    DBMS_OUTPUT.PUT_LINE('  Number of beer ratings: ' || TO_CHAR(rating_count));
+    DBMS_OUTPUT.PUT_LINE('  Number of beers: ' || TO_CHAR(beer_count));
+    DBMS_OUTPUT.PUT_LINE('  Number of pubs: ' || TO_CHAR(pub_count));
+END;
+
+-- demonstrate procedure database_stat
+BEGIN database_stat(); END;
