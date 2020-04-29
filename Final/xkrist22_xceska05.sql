@@ -1,27 +1,15 @@
-CREATE OR REPLACE TRIGGER pub_remove
-BEFORE DELETE ON account
-FOR EACH ROW
+-- Triger pro generování identifikátoru piv
+CREATE SEQUENCE ids;
+CREATE OR REPLACE TRIGGER beer_id_generate
+	BEFORE INSERT OR UPDATE ON beer
+	FOR EACH ROW
 BEGIN
-DELETE FROM offer WHERE pub_id = :old.id;
-DELETE FROM pub_rating WHERE pub_id = :old.id;
-DELETE FROM pub WHERE id = :old.id;
+	IF :new.id is null THEN
+	   :new.id := ids.NEXTVAL;
+	END IF;
 END;
 
-CREATE OR REPLACE TRIGGER test
-BEFORE DELETE ON offer
-FOR EACH ROWł
-BEGIN
-DELETE FROM pub_rating WHERE pub_id = :old.id;
-END;
-
-CREATE OR REPLACE TRIGGER pub1
-BEFORE DELETE ON pub
-FOR EACH ROW
-BEGIN
-DELETE FROM offer where pub_id = 7;ł
-DELETE FROM pub_rating where pub_id = 7;
-END;
-
+-- Triger pro vymazání záznamů o pivě z ostatních tabulek, pokud se vymaže pivo
 CREATE OR REPLACE TRIGGER tst
 BEFORE DELETE ON beer
 FOR EACH ROW
