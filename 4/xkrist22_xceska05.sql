@@ -176,21 +176,16 @@ END;
 
 -- INSERT VALUES INTO TABLE
 
+-- demonstrate functionality of trigger generate_account_id
 INSERT INTO account (email, city, street, house) values ('lx@svi.cz', 'Svitavy', 'Safarikova', '11');
 INSERT INTO account (email, city, street, house) values ('standa@seznam.cz', 'Polička', 'Nadrazni', '3');
 INSERT INTO account (email, city, street, house) values ('dita@gmail.com', 'Svitavy', 'Dlouhá', '32');
-
-
 INSERT INTO account (email, city, street, house) values ('pavel@svi.cz', 'Svitavy', 'Safarikova', '11');
 INSERT INTO account (email, city, street, house) values ('honza@seznam.cz', 'Polička', 'Nadrazni', '23');
 INSERT INTO account (email, city, street, house) values ('kamil@gmail.com', 'Brno', 'Strmá', '4322');
-
-
 INSERT INTO account (email, city, street, house) values ('maja@svi.cz', 'Svitavy', 'Strmá', '11');
 INSERT INTO account (email, city, street, house) values ('david@seznam.cz', 'Polička', 'Nadrazni', '53');
 INSERT INTO account (email, city, street, house) values ('anet@gmail.com', 'Praha', 'Dlouhá', '42');
-
-
 INSERT INTO account (email, city, street, house) values ('emily@svi.cz', 'Svitavy', 'Safarikova', '111');
 INSERT INTO account (email, city, street, house) values ('denis@seznam.cz', 'Olomouc', 'Skácelova', '73');
 INSERT INTO account (email, city, street, house) values ('steave@gmail.com', 'Česká Třebová', 'Příční', '4');
@@ -199,7 +194,6 @@ INSERT INTO account (email, city, street, house) values ('steave@gmail.com', 'Č
 INSERT INTO pub (id, name) values ('2', 'U Ditky');
 INSERT INTO person (id, name, surname, birth_date) values (1, 'Petr', ' Češka', TO_DATE('1999-03-25','YYYY-MM-DD'));
 INSERT INTO brewery (id, name, established_date) values ('3', 'Na kopečku', TO_DATE('2009-06-21','YYYY-MM-DD'));
-
 
 INSERT INTO person (id, name, surname, birth_date) values (4, 'Pavel', ' Staša', TO_DATE('1999-12-23','YYYY-MM-DD'));
 INSERT INTO person (id, name, surname, birth_date) values (5, 'Honza', ' Čáp', TO_DATE('1989-03-12','YYYY-MM-DD'));
@@ -273,10 +267,50 @@ INSERT INTO pub_rating (pub_id, person_id, service, interior, result) values ('8
 INSERT INTO pub_rating (pub_id, person_id, service, interior, result) values ('8', '5', '4', '5', '1');
 INSERT INTO pub_rating (pub_id, person_id, service, interior, result) values ('9', '6', '5', '3', '5');
 
-
+-- demonstrate functionality of trigger convert_to_euro
 INSERT INTO offer (pub_id, beer_id, price) values ('7', '1', '27');
 INSERT INTO offer (pub_id, beer_id, price) values ('7', '3', '25');
 INSERT INTO offer (pub_id, beer_id, price) values ('8', '2', '22');
 INSERT INTO offer (pub_id, beer_id, price) values ('8', '1', '34');
 INSERT INTO offer (pub_id, beer_id, price) values ('8', '5', '33');
 INSERT INTO offer (pub_id, beer_id, price) values ('9', '7', '41');
+
+
+-- PROCEDURES
+
+-- Procedure for printing statistics about beers
+CREATE OR REPLACE PROCEDURE beer_stat
+AS
+    CURSOR beer_cursor IS SELECT id FROM beer;
+    beer_id_elem INT;
+    beer_avg_taste FLOAT;
+    beer_avg_foam FLOAT;
+    beer_avg_smell FLOAT;
+    beer_avg_price FLOAT;
+    beer_name VARCHAR(255);
+BEGIN
+    OPEN beer_cursor;
+    LOOP
+        -- extract id from cursor
+        FETCH beer_cursor INTO beer_id_elem;
+        EXIT WHEN beer_cursor%NOTFOUND;
+
+        -- get values from tables
+        SELECT AVG(taste) INTO beer_avg_taste FROM beer_rating WHERE beer_rating.beer_id = beer_id_elem;
+        SELECT AVG(foam) INTO beer_avg_foam FROM beer_rating WHERE beer_rating.beer_id = beer_id_elem;
+        SELECT AVG(smell) INTO beer_avg_smell FROM beer_rating WHERE beer_rating.beer_id = beer_id_elem;
+        SELECT AVG(price) INTO beer_avg_price FROM offer WHERE offer.beer_id = beer_id_elem;
+        SELECT name INTO beer_name FROM beer WHERE beer.id = beer_id_elem;
+
+        -- print statistics about beer
+        DBMS_OUTPUT.PUT_LINE('Beer: ' || TO_CHAR(beer_name));
+        DBMS_OUTPUT.PUT_LINE('  Average taste: ' || TO_CHAR(beer_avg_taste));
+        DBMS_OUTPUT.PUT_LINE('  Average foam: ' || TO_CHAR(beer_avg_foam));
+        DBMS_OUTPUT.PUT_LINE('  Average smell: ' || TO_CHAR(beer_avg_smell));
+        DBMS_OUTPUT.PUT_LINE('  Average price: ' || TO_CHAR(beer_avg_price));
+    END LOOP;
+END;
+
+-- demonstrate procedure beer_stat
+BEGIN beer_stat(); END;
+
