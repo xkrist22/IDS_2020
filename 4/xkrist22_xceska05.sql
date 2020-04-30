@@ -24,6 +24,13 @@ DROP TABLE person;
 DROP TABLE pub;
 DROP TABLE account;
 
+-- DROP created sequences
+
+DROP SEQUENCE  account_id_sequence;
+
+-- DROP indexes
+
+DROP INDEX index_person;
 
 
 -- CREATE tables
@@ -149,7 +156,6 @@ CREATE TABLE offer (
 -- TRIGGERS
 
 -- Sequence generating values for account.id
-DROP SEQUENCE  account_id_sequence;    --TODO error if not createdd
 CREATE SEQUENCE account_id_sequence
     MINVALUE 1
     INCREMENT BY 1;
@@ -347,7 +353,6 @@ BEGIN database_stat(); END;
 -- EXPLAIN PLAN
 
     -- TODO
-        DROP INDEX index_person;
     EXPLAIN PLAN FOR
       SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
     FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
