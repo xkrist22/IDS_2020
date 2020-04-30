@@ -28,9 +28,9 @@ DROP TABLE account;
 
 DROP SEQUENCE  account_id_sequence;
 
--- DROP indexes
+-- DROP materialized wiew
 
-DROP INDEX index_person;
+DROP MATERIALIZED VIEW best_beer_4_20;
 
 
 -- CREATE tables
@@ -350,25 +350,59 @@ END;
 BEGIN database_stat(); END;
 
 
--- EXPLAIN PLAN
+-- EXPLAIN PLAN--
 
-    -- TODO
+-- we dont have to DROP indexes because it DROPS alongside tables
+-- but it can possibly be created bu users so...
+    DROP INDEX index_beer_type;
+
+-- print how many dark beers uses each type of yeast
     EXPLAIN PLAN FOR
-      SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
-    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
-    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
-    ORDER BY beer_rating.person_id NULLS LAST;
-    SELECT plan_table_output FROM table (dbms_xplan.display());
+SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
+    FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
+    WHERE beer.type = 'dark'
+    GROUP BY yeast.state
+    ORDER BY num_of_beers DESC NULLS LAST;
 
-    CREATE INDEX index_person ON person(name, surname);
+    SELECT plan_table_output AS Lplan_no_index FROM table (dbms_xplan.display);
+-- PEERFORMANCE BOOSTING
 
+--CREATE indexes for better performance for data retrieval
+    CREATE INDEX index_beer_type ON beer(type);
+
+--Left join with index
     EXPLAIN PLAN FOR
-      SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
-    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
-    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
-    ORDER BY beer_rating.person_id NULLS LAST;
-    SELECT plan_table_output FROM table (dbms_xplan.display());
+SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
+    FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
+    WHERE beer.type = 'dark'
+    GROUP BY yeast.state
+    ORDER BY num_of_beers DESC NULLS LAST;
 
+    SELECT plan_table_output AS Lplan_with_index FROM table (dbms_xplan.display);
+
+-- BEST PERFORMANCE
+-- Right join with condition: WHERE yeast_id is not null and with index
+    EXPLAIN PLAN FOR
+SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
+    FROM yeast RIGHT JOIN beer ON yeast.id = beer.yeast_id
+    WHERE yeast_id is not null AND beer.type = 'dark'
+    GROUP BY yeast.state
+    ORDER BY num_of_beers DESC NULLS LAST;
+
+    SELECT plan_table_output AS Rplan_with_index FROM table (dbms_xplan.display);
+
+
+SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
+    FROM yeast RIGHT JOIN beer ON yeast.id = beer.yeast_id
+    WHERE yeast_id is not null AND beer.type = 'dark'
+    GROUP BY yeast.state
+    ORDER BY num_of_beers DESC NULLS LAST;
+
+SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
+    FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
+    WHERE beer.type = 'dark'
+    GROUP BY yeast.state
+    ORDER BY num_of_beers DESC NULLS LAST;
 
 -- PRIVILEGES
 
@@ -392,7 +426,36 @@ GRANT EXECUTE ON database_stat  TO xceska05;
 
 -- MATERIALIZED VIEW
 
--- Materialized view: accounts
+CREATE MATERIALIZED VIEW best_beer_4_20 AS
+SELECT beer.id AS id, beer.name AS nazev, AVG(beer_rating.taste + beer_rating.smell + beer_rating.foam) AS avg
+    FROM beer_rating LEFT JOIN beer ON beer.id = beer_rating.beer_id
+    GROUP BY beer.id, beer.name
+    ORDER BY avg DESC NULLS LAST;
 
-    -- TODO
+--MATERIALIZED VIEW - DEMONSTRATION
+-- Materialized view is same as SELECT from actual database
+
+-- MV no change
+SELECT * FROM best_beer_4_20;
+-- SELECT no change
+SELECT beer.id AS id, beer.name AS nazev, AVG(beer_rating.taste + beer_rating.smell + beer_rating.foam) AS avg
+    FROM beer_rating LEFT JOIN beer ON beer.id = beer_rating.beer_id
+    GROUP BY beer.id, beer.name
+    ORDER BY avg DESC NULLS LAST;
+
+-- inserting data (user rated some beers)
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('8', '4', '5', '5', '5');
+INSERT INTO beer_rating (beer_id, person_id, taste, foam, smell) values ('2', '5', '1', '2', '1');
+
+-- materialized view is same as when created, but SELECT from actual database is changed because of executed inserts
+
+-- MV changed data
+SELECT * FROM best_beer_4_20;
+
+-- SELECT changed data
+SELECT beer.id AS id, beer.name AS nazev, AVG(beer_rating.taste + beer_rating.smell + beer_rating.foam) AS avg
+    FROM beer_rating LEFT JOIN beer ON beer.id = beer_rating.beer_id
+    GROUP BY beer.id, beer.name
+    ORDER BY avg DESC NULLS LAST;
+
 
