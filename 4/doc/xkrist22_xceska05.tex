@@ -1,0 +1,89 @@
+\documentclass[a4paper, 11pt]{article}
+
+\usepackage[czech]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[left=2cm, top=3cm, text={17cm, 24cm}]{geometry}
+\usepackage{times}
+\usepackage{graphicx} % vkládání obrázků
+\usepackage[unicode]{hyperref}
+\usepackage{amsmath}
+\usepackage{multirow}
+
+
+\begin{document}
+	\begin{titlepage}
+		\begin{center}
+			\includegraphics[width=0.77\linewidth]{pics/FIT_logo.pdf} \\
+
+			\vspace{\stretch{0.382}}
+
+			\Huge{Projektová dokumentace} \\
+			\LARGE{\textbf{IDS: Finální schéma databáze \uv{Pivovárníci}}} \\
+			\vspace{\stretch{0.618}}
+		\end{center}
+
+		\begin{minipage}{0.4 \textwidth}
+			{\Large \today}
+		\end{minipage}
+		\hfill
+		\Large
+		\begin{tabular}{l l}
+			\textbf{Jiří Křištof} & \textbf{(xkrist22)} \\
+			Petr Češka & (xceska05) \\
+		\end{tabular}
+	\end{titlepage}
+	\newpage
+	
+\section{Úvod}
+Projekt se skládá celkem ze 4 částí
+
+\begin{itemize}
+	\item UC a ER diagram
+	\item SQL skript vytvářející základní objekty databáze
+	\item SQL dotazy nad databází
+	\item SQL skript vytvářející pokročilé objekty databáze
+\end{itemize}
+
+\section{SQL skript vytvářející základní objekty databáze}
+SQL skript z druhé části vytváří tabulky databáze, které propojuje s užitím primárních a cizích klíčů. Schéma databáze (ER diagram) je uvedeno v dokumentu vytvořeném v první části projektu.
+
+
+Databáze je naplněna ukázkovými daty.
+
+\section{SQL dotazy nad databází}
+%TODO
+
+\section{SQL skript vytvářející pokročilé objekty databáze}
+Z pokročilých objektů jsou vytvořeny tyto – 2 triggery, 2 procedury, index optimalizující dotaz s pomocí \texttt{EXPLAIN PLAN} a materializovaný pohled. Jsou nastaveny přístupová práva pro druhého člena týmu.
+
+\subsection{Triggery}
+Skript obsahuje 2 databázové triggery – \texttt{generate\_account\_id} a \texttt{convert\_to\_euro}.
+
+
+První zmíněný trigger generuje primární klíč při vkládání do tabulky \texttt{account}, pokud v příkazu insert není explicitně primární klíč uveden.
+
+
+Druhý trigger při vkládání do tabulky \texttt{offer} převádí cenu piva v nabídce (uvedenou v měně CZK) do měny EUR. 
+
+
+Funkčnost triggerů je demonstrována na vkládání dat do databáze. 
+
+\subsection{Procedury}
+Ve skriptu jsou implementovány 2 procedury – \texttt{beer\_stat} a \texttt{database\_stat}. 
+Skript produkuje výstup do konzole pomocí příkazu \texttt{DBMS\_OUTPUT.PUT\_LINE} pro demonstraci chování procedury. 
+
+
+Procedura \texttt{beer\_stat} vypíše statistiky o pivech – průměrné hodnocení chuti, pěny a vůně a průměrnou cenu piva. 
+
+
+Procedura \texttt{database\_stat} vypisuje statistiky celé databáze – počet účtů, pivovarů, počet celkových provedených hodnocení, počet vložených piv a existujících pivovarů. 
+
+\subsection{Optimalizace dotazu}
+%TODO
+
+\subsection{Materializovaný pohled}
+%TODO
+
+\end{document}
+	
+	
