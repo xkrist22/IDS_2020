@@ -190,7 +190,7 @@ SELECT pub.name, beer.name, offer.price
 -- TRIGGERS
 
 -- Sequence generating values for account.id
--- DROP SEQUENCE  account_id_sequence; -- CAN BE USED FOR DROPPING SEQUENCE account_id_sequence
+DROP SEQUENCE  account_id_sequence;
 CREATE SEQUENCE account_id_sequence
     MINVALUE 1
     INCREMENT BY 1;
