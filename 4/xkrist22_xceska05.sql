@@ -362,7 +362,7 @@ SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
     FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
     WHERE beer.type = 'dark'
     GROUP BY yeast.state
-    ORDER BY num_of_beers DESC NULLS LAST;
+    ORDER BY num_of_beers DESC;
 
     SELECT plan_table_output AS Lplan_no_index FROM table (dbms_xplan.display);
 -- PEERFORMANCE BOOSTING
@@ -376,7 +376,7 @@ SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
     FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
     WHERE beer.type = 'dark'
     GROUP BY yeast.state
-    ORDER BY num_of_beers DESC NULLS LAST;
+    ORDER BY num_of_beers DESC;
 
     SELECT plan_table_output AS Lplan_with_index FROM table (dbms_xplan.display);
 
@@ -387,22 +387,9 @@ SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
     FROM yeast RIGHT JOIN beer ON yeast.id = beer.yeast_id
     WHERE yeast_id is not null AND beer.type = 'dark'
     GROUP BY yeast.state
-    ORDER BY num_of_beers DESC NULLS LAST;
+    ORDER BY num_of_beers DESC;
 
     SELECT plan_table_output AS Rplan_with_index FROM table (dbms_xplan.display);
-
-
-SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
-    FROM yeast RIGHT JOIN beer ON yeast.id = beer.yeast_id
-    WHERE yeast_id is not null AND beer.type = 'dark'
-    GROUP BY yeast.state
-    ORDER BY num_of_beers DESC NULLS LAST;
-
-SELECT yeast.state AS state, COUNT(beer.id) AS num_of_beers
-    FROM yeast LEFT JOIN beer ON yeast.id = beer.yeast_id
-    WHERE beer.type = 'dark'
-    GROUP BY yeast.state
-    ORDER BY num_of_beers DESC NULLS LAST;
 
 -- PRIVILEGES
 
