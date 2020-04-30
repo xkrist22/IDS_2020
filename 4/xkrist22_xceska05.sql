@@ -142,47 +142,6 @@ CREATE TABLE offer (
     CONSTRAINT offer_pub_fk FOREIGN KEY(pub_id) REFERENCES pub(id) ON DELETE SET NULL
 );
 
-
--- -----------------------------------------------------------------
--- Part 3: script with SELECTs from database
--- -----------------------------------------------------------------
-
--- Nová hospoda ve Svitavách chce zaslat nabídku akcí místním uživatelům systému. [Zobraz jméno a kontakt uživatelů žijících ve Svitavách.]
-SELECT person.name AS jmeno, person.surname AS prijmeni, account.email AS kontakt
-    FROM person JOIN account ON person.id = account.id
-    WHERE account.city='Svitavy';
-
--- Chceme porovnat, jak závisí hořkost výsledného piva na hořkosti chmelu. [Vypiš ke každému pivu jeho název, hořkost a hořkost použitého chmelu.]
-SELECT beer.name AS nazev, beer.bitterness AS horkost_piva, hop.bitterness AS horkost_chmelu
-    FROM beer JOIN hop ON beer.hop_id = hop.id;
-
---Chceme vědět, jak hodně jsou uživatelé aktivní v hodnocení piv. [Vypiš, kolik piv jednotliví uživatelé ohodnotili.]
-SELECT  beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
-    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
-    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
-    ORDER BY beer_rating.person_id NULLS LAST;
-
---Chceme zjistit, jaká piva chutnají našim uživatelům nejvíce (sestavit žebříček). [Vypiš průměrné hodnocení jednotlivých piv a jejich názvy.]
-SELECT beer_rating.beer_id AS id, beer.name AS nazev, AVG(beer_rating.taste + beer_rating.smell + beer_rating.foam) AS avg
-    FROM beer_rating RIGHT JOIN beer ON beer.id = beer_rating.beer_id
-    GROUP BY beer_rating.beer_id, beer.name
-    ORDER BY avg DESC NULLS LAST;
-
---Uživatel si chce zajít na Mouřenína, vypíšeme mu, v jakých hospodách ho čepují. [Zobraz hospody, kde čepují pivo s id=1.]
-SELECT pub.name FROM pub
-    WHERE EXISTS(SELECT pub_id FROM offer WHERE pub.id = pub_id AND beer_id = 1);
-
---Ve vyhledávání jsme dostali pokyn, že máme vypsat informace jen o pivech, které používají kvasnice v kapalném skupenství. [Vypiš informace o pivech, které používají tekuté kvasnice.]
-SELECT name AS nazev ,color AS barva ,type AS typ ,alcohol_volume AS stupen ,bitterness AS horkost ,savor AS prichut
-    FROM beer
-    WHERE yeast_id IN(SELECT id from yeast WHERE state = 'liquid');
-
---Student zjistil, že mu zbylo jen 30Kč ale chce si zajít na pivo. Proto v systému chce najít podniky kde točí pivo pod 30Kč a jaké je to pivo [Vypiš název piva a hospody, kde mají cena piva je do 30.]
-SELECT pub.name, beer.name, offer.price
-    FROM offer JOIN pub ON offer.pub_id=pub.id JOIN beer ON offer.beer_id = beer.id
-    WHERE offer.price <=30;
-
-
 -- -----------------------------------------------------------------
 -- Part 4: advanced objects of the database
 -- -----------------------------------------------------------------
@@ -190,7 +149,7 @@ SELECT pub.name, beer.name, offer.price
 -- TRIGGERS
 
 -- Sequence generating values for account.id
-DROP SEQUENCE  account_id_sequence;
+DROP SEQUENCE  account_id_sequence;    --TODO error if not createdd
 CREATE SEQUENCE account_id_sequence
     MINVALUE 1
     INCREMENT BY 1;
@@ -388,6 +347,22 @@ BEGIN database_stat(); END;
 -- EXPLAIN PLAN
 
     -- TODO
+        DROP INDEX index_person;
+    EXPLAIN PLAN FOR
+      SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
+    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
+    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
+    ORDER BY beer_rating.person_id NULLS LAST;
+    SELECT plan_table_output FROM table (dbms_xplan.display());
+
+    CREATE INDEX index_person ON person(name, surname);
+
+    EXPLAIN PLAN FOR
+      SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
+    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
+    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
+    ORDER BY beer_rating.person_id NULLS LAST;
+    SELECT plan_table_output FROM table (dbms_xplan.display());
 
 
 -- PRIVILEGES
@@ -415,3 +390,4 @@ GRANT EXECUTE ON database_stat  TO xceska05;
 -- Materialized view: accounts
 
     -- TODO
+

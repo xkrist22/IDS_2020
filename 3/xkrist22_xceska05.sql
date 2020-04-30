@@ -272,7 +272,7 @@ SELECT beer.name AS nazev, beer.bitterness AS horkost_piva, hop.bitterness AS ho
     FROM beer JOIN hop ON beer.hop_id = hop.id;
 
 --Chceme vědět, jak hodně jsou uživatelé aktivní v hodnocení piv. [Vypiš, kolik piv jednotliví uživatelé ohodnotili.]
-SELECT  beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
+SELECT beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
     FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
     GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
     ORDER BY beer_rating.person_id NULLS LAST;
