@@ -144,13 +144,53 @@ CREATE TABLE offer (
 
 
 -- -----------------------------------------------------------------
+-- Part 3: script with SELECTs from database
+-- -----------------------------------------------------------------
+
+-- Nová hospoda ve Svitavách chce zaslat nabídku akcí místním uživatelům systému. [Zobraz jméno a kontakt uživatelů žijících ve Svitavách.]
+SELECT person.name AS jmeno, person.surname AS prijmeni, account.email AS kontakt
+    FROM person JOIN account ON person.id = account.id
+    WHERE account.city='Svitavy';
+
+-- Chceme porovnat, jak závisí hořkost výsledného piva na hořkosti chmelu. [Vypiš ke každému pivu jeho název, hořkost a hořkost použitého chmelu.]
+SELECT beer.name AS nazev, beer.bitterness AS horkost_piva, hop.bitterness AS horkost_chmelu
+    FROM beer JOIN hop ON beer.hop_id = hop.id;
+
+--Chceme vědět, jak hodně jsou uživatelé aktivní v hodnocení piv. [Vypiš, kolik piv jednotliví uživatelé ohodnotili.]
+SELECT  beer_rating.person_id as ID, CONCAT(CONCAT(person.name,' '), person.surname) as jmeno, COUNT(beer_id) AS pocet_hodnoceni
+    FROM beer_rating RIGHT JOIN person ON beer_rating.person_id=person.id
+    GROUP BY beer_rating.person_id, CONCAT(CONCAT(person.name,' '), person.surname)
+    ORDER BY beer_rating.person_id NULLS LAST;
+
+--Chceme zjistit, jaká piva chutnají našim uživatelům nejvíce (sestavit žebříček). [Vypiš průměrné hodnocení jednotlivých piv a jejich názvy.]
+SELECT beer_rating.beer_id AS id, beer.name AS nazev, AVG(beer_rating.taste + beer_rating.smell + beer_rating.foam) AS avg
+    FROM beer_rating RIGHT JOIN beer ON beer.id = beer_rating.beer_id
+    GROUP BY beer_rating.beer_id, beer.name
+    ORDER BY avg DESC NULLS LAST;
+
+--Uživatel si chce zajít na Mouřenína, vypíšeme mu, v jakých hospodách ho čepují. [Zobraz hospody, kde čepují pivo s id=1.]
+SELECT pub.name FROM pub
+    WHERE EXISTS(SELECT pub_id FROM offer WHERE pub.id = pub_id AND beer_id = 1);
+
+--Ve vyhledávání jsme dostali pokyn, že máme vypsat informace jen o pivech, které používají kvasnice v kapalném skupenství. [Vypiš informace o pivech, které používají tekuté kvasnice.]
+SELECT name AS nazev ,color AS barva ,type AS typ ,alcohol_volume AS stupen ,bitterness AS horkost ,savor AS prichut
+    FROM beer
+    WHERE yeast_id IN(SELECT id from yeast WHERE state = 'liquid');
+
+--Student zjistil, že mu zbylo jen 30Kč ale chce si zajít na pivo. Proto v systému chce najít podniky kde točí pivo pod 30Kč a jaké je to pivo [Vypiš název piva a hospody, kde mají cena piva je do 30.]
+SELECT pub.name, beer.name, offer.price
+    FROM offer JOIN pub ON offer.pub_id=pub.id JOIN beer ON offer.beer_id = beer.id
+    WHERE offer.price <=30;
+
+
+-- -----------------------------------------------------------------
 -- Part 4: advanced objects of the database
 -- -----------------------------------------------------------------
 
 -- TRIGGERS
 
 -- Sequence generating values for account.id
-DROP SEQUENCE  account_id_sequence;
+-- DROP SEQUENCE  account_id_sequence; -- CAN BE USED FOR DROPPING SEQUENCE account_id_sequence
 CREATE SEQUENCE account_id_sequence
     MINVALUE 1
     INCREMENT BY 1;
@@ -343,3 +383,35 @@ END;
 
 -- demonstrate procedure database_stat
 BEGIN database_stat(); END;
+
+
+-- EXPLAIN PLAN
+
+    -- TODO
+
+
+-- PRIVILEGES
+
+-- Tables
+GRANT ALL ON offer          TO xceska05;
+GRANT ALL ON beer_rating    TO xceska05;
+GRANT ALL ON pub_rating     TO xceska05;
+GRANT ALL ON beer           TO xceska05;
+GRANT ALL ON malt           TO xceska05;
+GRANT ALL ON yeast          TO xceska05;
+GRANT ALL ON hop            TO xceska05;
+GRANT ALL ON brewery        TO xceska05;
+GRANT ALL ON person         TO xceska05;
+GRANT ALL ON pub            TO xceska05;
+GRANT ALL ON account        TO xceska05;
+
+-- Procedures
+GRANT EXECUTE ON beer_stat      TO xceska05;
+GRANT EXECUTE ON database_stat  TO xceska05;
+
+
+-- MATERIALIZED VIEW
+
+-- Materialized view: accounts
+
+    -- TODO
