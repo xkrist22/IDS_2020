@@ -51,6 +51,8 @@ SQL skript z druhé části vytváří tabulky databáze, které propojuje s už
 
 Databáze je naplněna ukázkovými daty.
 
+\section{SQL dotazy nad databází}
+Je uvedeno několik funkčních dotazů nad databází vytvořenou v prvních dvou částech projektu. Tyto dotazy jsou tvořeny, aby byly smysluplné a použitelné při reálném pracování s databází.\\ Komentář k dotazu (funkcionalita dotazu a jeho použití v praxi) je vždy uveden nad daným příkazem.
 
 \section{SQL skript vytvářející pokročilé objekty databáze}
 Z pokročilých objektů jsou vytvořeny tyto – 2 triggery, 2 procedury, index optimalizující dotaz s pomocí \texttt{EXPLAIN PLAN} a materializovaný pohled. Jsou nastaveny přístupová práva pro druhého člena týmu.
@@ -79,12 +81,25 @@ Procedura \texttt{database\_stat} vypisuje statistiky celé databáze – počet
 
 \subsection{Optimalizace dotazu}
 
-Optimalizace dotazů je dosažena přidáním indexu k sloupci \texttt{type} v tabulce \texttt{beer} a použitím jiného spojení. Pro vypisování průběhu dotazu a statistik jednotlivých kroků je použit příkaz \texttt(EXPLAIN PLAIN).  \\ \\
-Pro demonstraci je vybrán dotaz, který vypisuje, kolik tmavých piv používá určité skupenství kvasnic.\\
-Po vypsání průběhu neoptimalizovaného dotazu je přidán index \texttt{index\_beer\_type}. Ten zajistí, že když budeme příště přistupovat k některým záznamům ve sloupci \texttt{type}, proběhne rychleji. Při demonstraci lze vidět, že se snížil celkový \texttt{cost} dotazu. Dále změnou spojení tabulek na \texttt{RIGHT JOIN} a přidáním pravidla \texttt{WHERE yeast\_id IS NOT NULL} dosáhneme stejného výstupu, ale umožníme interním operacím (v našem případě \texttt{unique scan}) snížit \texttt{cost} a množství přenesených bytů.
-\subsection{Materializovaný pohled}
-%TODO
+Optimalizace dotazů je dosažena přidáním indexu k sloupci \texttt{type} v tabulce \texttt{beer} a použitím jiného spojení. Pro vypisování průběhu dotazu a statistik jednotlivých kroků je použit příkaz \texttt(EXPLAIN PLAIN).
 
+
+Pro demonstraci je vybrán dotaz, který vypisuje, kolik tmavých piv používá určité skupenství kvasnic.
+
+
+Po vypsání průběhu neoptimalizovaného dotazu je přidán index \texttt{index\_beer\_type}. Ten zajistí, že když budeme příště přistupovat k některým záznamům ve sloupci \texttt{type}, proběhne rychleji. Při demonstraci lze vidět, že se snížil celkový \texttt{cost} dotazu. Dále změnou spojení tabulek na \texttt{RIGHT JOIN} a přidáním pravidla\\ \texttt{WHERE yeast\_id IS NOT NULL } dosáhneme stejného výstupu, ale umožníme interním operacím (v našem případě \texttt{unique scan}) snížit \texttt{cost} a množství přenesených bytů.
+
+\subsection{Materializovaný pohled}
+Materializovaný pohled uloží pohled lokálně na disk. Využitý může být při častém přístupu k tomuto pohledu (tento pohled však nebude aktualizován případnými změnami v tabulce).
+
+
+Demonstrován je na příkladu, kdy je v našem systému každý měsíc poskytována statistika nejlépe hodnocených piv. Hodnocení je uloženo do materializovaného pohledu a tím pádem i když uživatelé budou hodnotit dále, je možné jednoduše zobrazit žebříček např. z minulého měsíce.
+
+
+Je vytvořen pohled \texttt{best\_beer\_4\_20} a porovnán s dotazem který je použit na vytvoření dotazu.
+Poté je nasimulováno hodnocení uživatelem a znovu vypsáno porovnání. Pohled stále uchovává starý žebříček, ale v dotazu už se hodnocení aktualizovalo.
+
+ 
 \end{document}
 	
 	
